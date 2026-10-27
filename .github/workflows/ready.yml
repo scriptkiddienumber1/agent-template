@@ -8,6 +8,11 @@ on:
 # `env` is not available in job-level `if`, so both jobs compare
 # github.event.sender.login with github.repository_owner directly. That is the
 # owner here and stays correct when the repo is created from the template.
+# For an organisation-owned repo github.repository_owner is the org name, which no
+# sender login equals, so the guard would strip every "ready" label and the
+# conductor would never run; in that case replace github.repository_owner in both
+# `if` expressions with the allowed login (or a vars. entry via a job-level check)
+# before using the template.
 
 jobs:
   # Removes "ready" when anyone but the owner adds it. Plain shell, no Claude.
@@ -29,8 +34,12 @@ jobs:
       REPO: ${{ github.repository }}
     steps:
       - run: |
-          gh issue edit "$ISSUE" --remove-label ready --repo "$REPO"
-          gh issue comment "$ISSUE" --repo "$REPO" --body "Removed the \`ready\` label: it was added by @$SENDER, but only the repository owner (@$OWNER) may add it. To start the work, the owner adds the \`ready\` label."
+          if gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/ready"; then
+            gh issue comment "$ISSUE" --repo "$REPO" --body "Removed the \`ready\` label: it was added by @$SENDER, but only the repository owner (@$OWNER) may add it. To start the work, the owner adds the \`ready\` label."
+          else
+            gh issue comment "$ISSUE" --repo "$REPO" --body "The \`ready\` label was added by @$SENDER, who is not the repository owner (@$OWNER), but it could not be removed automatically. @$OWNER please check this issue."
+            exit 1
+          fi
 
   # One conductor at a time. Each run drains the whole "ready" backlog, so a
   # queued run that GitHub drops (it keeps only the newest pending one) loses
