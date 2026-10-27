@@ -45,9 +45,13 @@ jobs:
             that issue and continue with the next. Before stopping, update
             docs/progress.md with where you left off. Never merge, never push to
             main, never add the "ready" label.
-          # Hard block, independent of .claude/settings.json: unattended runs must
-          # never be able to add the "ready" label (only the owner does that).
+          # Best-effort hard block on `gh` command strings, independent of
+          # .claude/settings.json: unattended runs should not be able to add the
+          # "ready" label (only the owner does that). Not an absolute guarantee:
+          # other tools or obfuscated commands could still reach the API.
+          # The *ready* substring also refuses unrelated commands containing the
+          # word (e.g. a title with "already"); this fails closed, by design.
           claude_args: |
             --agent conductor
             --max-turns 200
-            --disallowedTools "Bash(gh issue edit *ready*)" "Bash(gh issue create *ready*)" "Bash(gh api *)"
+            --disallowedTools "Bash(gh issue edit *ready*)" "Bash(gh issue create *ready*)" "Bash(gh api *)" "Bash(gh * issue edit *ready*)" "Bash(gh * issue create *ready*)" "Bash(gh pr edit *)"
