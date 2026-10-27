@@ -48,8 +48,16 @@ If root `CLAUDE.md` still says `Project: TBD`:
    escalate to the user instead of looping.
 7. Pass a summary of what changed and why to `docs` (updates `docs/progress.md`
    and `docs/decisions.md`).
-8. Open the PR (`Closes #<n>`, what changed and why, how to test). Never merge.
-9. Give the user a short summary: **changed / left / needs your decision**.
+8. Open the PR (`Closes #<n>`). The description carries the full details: what
+   changed and why, known limits, how to test. Never merge.
+9. Give the user a short final summary in exactly this format:
+   - **Done:** one line on what changed.
+   - **Needs me:** one line per item, with enough context to decide. Omit if nothing.
+   - **Caveats:** one line per real risk or untested assumption. Omit if none.
+   - **PR:** link.
+
+   Full details belong in the PR description, not in chat. Add detail in chat
+   only if something went wrong or the user asks.
 
 ## Interruption safety
 - Before stopping or handing off (including escalating or waiting on the user),

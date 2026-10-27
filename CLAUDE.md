@@ -34,3 +34,6 @@ _TBD: install, test, lint, run._
   `docs/progress.md` before stopping. On resume, read `docs/progress.md`, open
   issues and branches without a PR, and continue rather than restart.
 - Every behavior change ships with tests and goes through the reviewer first.
+- Final summaries to the owner stay short: Done (one line), Needs me (one line per item, omit if none),
+  Caveats (one line per real risk, omit if none), PR link. Details go in the PR description. Chat
+  detail only if something went wrong or the owner asks.
