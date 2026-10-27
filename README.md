@@ -42,3 +42,11 @@ backlog; you decide what is `ready` and what gets merged.
   (ask rule). The owner can approve adding `ready` interactively after saying yes in
   chat. Unattended runs are refused because nobody can approve, so agents never add
   `ready` on their own. Other `gh issue edit` forms also need approval.
+- Unattended runs are also hard-blocked in `ready.yml` via `--disallowedTools`
+  (best-effort: matches `gh` command strings, so other tools could still reach the API).
+  It also denies the whole official GitHub MCP server (`mcp__github`) as defense in depth;
+  whether that deny applies inside the Action is unverified. See `docs/decisions.md`.
+- Start of each issue: the conductor first checks the working tree. If the issue branch is
+  already checked out, it continues there. Otherwise a clean tree gets `git fetch origin`, then
+  an existing branch is switched to, or a new branch is created from the latest `origin/main`
+  (`git pull --ff-only origin main` first). A dirty tree stops the work; nothing is switched.

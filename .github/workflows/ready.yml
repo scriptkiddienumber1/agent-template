@@ -45,6 +45,19 @@ jobs:
             that issue and continue with the next. Before stopping, update
             docs/progress.md with where you left off. Never merge, never push to
             main, never add the "ready" label.
+          # Best-effort hard block on `gh` command strings, independent of
+          # .claude/settings.json: unattended runs should not be able to add the
+          # "ready" label (only the owner does that). Not an absolute guarantee:
+          # other tools or obfuscated commands could still reach the API.
+          # As far as we could tell from the Action's source, it registers the
+          # official GitHub MCP server (which can set labels via update_issue/
+          # create_issue, or issue_write in newer server versions) only when
+          # allowedTools names it; this workflow does not. The server-level deny
+          # "mcp__github" below is defense in depth: it denies every tool of that
+          # server, which the unattended flow does not use.
+          # The *ready* substring also refuses unrelated commands containing the
+          # word (e.g. a title with "already"); this fails closed, by design.
           claude_args: |
             --agent conductor
             --max-turns 200
+            --disallowedTools "Bash(gh issue edit *ready*)" "Bash(gh issue create *ready*)" "Bash(gh api *)" "Bash(gh * issue edit *ready*)" "Bash(gh * issue create *ready*)" "Bash(gh pr edit *)" "mcp__github"

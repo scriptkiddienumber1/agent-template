@@ -19,6 +19,8 @@ _TBD: install, test, lint, run._
 - Issues are the backlog. Labels: `bug`, `feature`, `chore`, `ready`, `needs-decision`.
   Create any that are missing with `gh label create`.
 - One branch per issue: `<type>/<issue-number>-<short-slug>` (type = bug | feature | chore).
+  Every issue branch is created from the latest `origin/main` after `git fetch` and
+  `git pull --ff-only origin main`. If the working tree is dirty, stop and tell the user.
 - PRs include `Closes #<n>`, what changed and why, and how to test.
 - Never merge PRs. Never push to `main`. Merging is always the user's decision.
 - `ready` = start as soon as possible. Only the user approves it; agents and
