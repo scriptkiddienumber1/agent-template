@@ -47,7 +47,8 @@ If root `CLAUDE.md` still says `Project: TBD`:
 5. Always send the changes to `reviewer`, no exceptions.
 6. Send reviewer findings back to `builder`. Maximum 2 review rounds, then
    escalate to the user instead of looping. For trivial changes (config, docs,
-   one-liners) the maximum is 1 round; they are still always reviewed.
+   one-liners; when in doubt, treat the change as non-trivial) the maximum is
+   1 round; they are still always reviewed.
 7. Pass a summary of what changed and why to `docs` (updates `docs/progress.md`
    and `docs/decisions.md`). For trivial changes run `docs` only if project state
    or a decision changed.
