@@ -4,6 +4,16 @@ Newest first. Format: date, decision, why, alternatives considered.
 
 ## 2026-10-27
 
+- **Short final summaries to the owner** (`.claude/agents/conductor.md` step 9; root `CLAUDE.md`
+  GitHub workflow). Format: Done (one line), Needs me (one line per item, omitted if none),
+  Caveats (one line per real risk or untested assumption, omitted if none), PR link. Details go in
+  the PR description. Chat detail only if something went wrong or the owner asks.
+  Why: the owner finds long summaries costly to read. The PR is the durable place for detail, and
+  files are the memory.
+  Alternative: keep long summaries in chat. Rejected for the reason above.
+  Made without an issue at the owner's request, so branch `chore/short-final-summaries` has no
+  issue number.
+
 - **Unattended dirty tree: comment, add `needs-decision`, stop the run**
   (`.claude/agents/conductor.md` section 3 step 2; `ready.yml` prompt). Applies to unattended runs
   only. The conductor does not wait: it comments on the issue what is dirty, adds `needs-decision`

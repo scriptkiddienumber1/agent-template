@@ -5,19 +5,16 @@
 - #1 (`.gitattributes` LF, `ready` rules to `ask`) merged via PR #2.
 - #3 (hard-block unattended `ready` label changes, start-of-issue sync) merged via PR #4
   (`Closes #3`).
-- Issue #5 is in progress on branch `chore/5-unattended-dirty-tree-label-guard`. PR not opened
-  yet; it will say `Closes #5`. Reviewer: APPROVE after 2 rounds. Scope:
-  - Unattended dirty tree: the conductor does not wait. It comments on the issue, adds
-    `needs-decision` and stops the run. Interactive behavior is unchanged.
-  - `ready.yml` `guard` job: when anyone but the repository owner adds `ready`, it removes the
-    label (REST DELETE, no Claude) and comments why. The `conductor` job runs only for the owner.
-    The `ready-queue` concurrency group moved to the `conductor` job.
-  - Not tested in a real Action run.
+- #5 (unattended dirty tree stop, owner-only `ready` guard job) merged via PR #6 (`Closes #5`).
+  Not yet tested in a real Action run.
+- Open: branch `chore/short-final-summaries` (no issue) with a PR pending. It changes the
+  final-summary format (see `docs/decisions.md`, 2026-10-27).
 
 ## Open issues / PRs
-- #5 (chore, branch `chore/5-unattended-dirty-tree-label-guard`): in progress. PR pending.
-  Known nits (see `docs/decisions.md`, 2026-10-27): a tiny race with a conductor run that already
-  listed `ready` issues; a 404 gives a harmless false-alarm comment.
+- Short-summaries PR (branch `chore/short-final-summaries`, no issue, PR pending). Number to be
+  added once opened.
+- #5 is merged (PR #6). Known nits remain (see `docs/decisions.md`, 2026-10-27): a tiny race with
+  a conductor run that already listed `ready` issues; a 404 gives a harmless false-alarm comment.
 - Optional follow-ups from PR #4, skipped by the owner (not applied; see `docs/decisions.md`,
   2026-10-27):
   - Set upstream explicitly: `git switch -c <branch> origin/main` tracks `origin/main`
@@ -26,7 +23,7 @@
     `git branch -r --list origin/<branch>`) and add `git branch` to the read-only git list.
 
 ## Next
-- [ ] **Open the PR for #5** (`Closes #5`, what changed and why, how to test). Never merge;
+- [ ] **Open the PR for the short-summaries branch** (no issue; say so in the PR). Never merge;
   merging is the user's decision.
 - [ ] **Test #5 in a real Action run** (untested): a non-owner `ready` is removed with a comment;
   an owner `ready` starts the conductor; a dirty tree in an unattended run comments and stops.
@@ -42,3 +39,4 @@
   (PR #2, merged).
 - #3 hard-block of unattended `ready` label changes and the start-of-issue sync
   (PR #4, merged).
+- #5 unattended dirty-tree stop and owner-only `ready` guard job (PR #6, merged).
