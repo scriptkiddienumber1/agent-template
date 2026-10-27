@@ -98,5 +98,5 @@ jobs:
           # word (e.g. a title with "already"); this fails closed, by design.
           claude_args: |
             --agent conductor
-            --max-turns 200
+            --max-turns 80
             --disallowedTools "Bash(gh issue edit *ready*)" "Bash(gh issue create *ready*)" "Bash(gh api *)" "Bash(gh * issue edit *ready*)" "Bash(gh * issue create *ready*)" "Bash(gh pr edit *)" "mcp__github"

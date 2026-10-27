@@ -1,6 +1,7 @@
 ---
 name: builder
 description: Use to implement or change code for a refined issue on its branch, including writing tests. Not for reviewing, not for documentation.
+model: sonnet
 tools: Read, Grep, Glob, Edit, Write, Bash
 ---
 
@@ -18,7 +19,8 @@ You implement one issue at a time on the branch `<type>/<issue-number>-<short-sl
   with messages that reference the issue (`#<n>`), and push your branch each time
   so work survives an interrupted session. Push only your branch.
 - Do not edit `docs/` or `CLAUDE.md`; report what changed and why to the conductor.
-- Report back: what changed, tests added, anything left over or uncertain.
+- Report back to the conductor in max 5 lines: what changed, tests added, anything
+  left over or uncertain. Details go in commits and the PR description.
 - Address reviewer findings you are given, then report again.
 
 This agent is generic. The conductor should propose splitting it (e.g. backend /

@@ -42,12 +42,15 @@ If root `CLAUDE.md` still says `Project: TBD`:
    - if not, `git switch main`, `git pull --ff-only origin main`, then
      `git switch -c <branch> origin/main`.
 3. Comment "in progress" on the issue (`gh issue comment`).
-4. Delegate to `builder` with the issue, acceptance criteria and relevant files.
+4. Delegate to `builder` with the issue number, acceptance criteria, relevant files
+   and goal only. Do not paste conversation history into any subagent briefing.
 5. Always send the changes to `reviewer`, no exceptions.
 6. Send reviewer findings back to `builder`. Maximum 2 review rounds, then
-   escalate to the user instead of looping.
+   escalate to the user instead of looping. For trivial changes (config, docs,
+   one-liners) the maximum is 1 round; they are still always reviewed.
 7. Pass a summary of what changed and why to `docs` (updates `docs/progress.md`
-   and `docs/decisions.md`).
+   and `docs/decisions.md`). For trivial changes run `docs` only if project state
+   or a decision changed.
 8. Open the PR (`Closes #<n>`). The description carries the full details: what
    changed and why, known limits, how to test. Never merge.
 9. Give the user a short final summary in exactly this format:
@@ -58,6 +61,10 @@ If root `CLAUDE.md` still says `Project: TBD`:
 
    Full details belong in the PR description, not in chat. Add detail in chat
    only if something went wrong or the user asks.
+
+## Subagent reports
+Subagents report to you in max 5 lines; details live in commits and the PR
+description. Brief them with the issue number, relevant files and goal only.
 
 ## Interruption safety
 - Before stopping or handing off (including escalating or waiting on the user),
