@@ -9,18 +9,17 @@
   Not yet tested in a real Action run.
 - Short final summaries (branch `chore/short-final-summaries`, no issue) merged via PR #7.
 - #8 (token efficiency: 5-line subagent reports, size-scaled review, explicit models, unattended
-  `--max-turns` 80) is in progress on branch `chore/8-token-efficiency`. Builder and reviewer done;
-  reviewer verdict APPROVE, no blockers. PR pending (number to add once opened). Not committed yet
-  at the time of this note. Untested in a real run.
+  `--max-turns` 80) merged via PR #9 (`Closes #8`). Untested in a real run.
+- Trivial-change tie-break (branch `chore/trivial-tie-break`, commit 44ffb1a, no issue) adds "when
+  in doubt, treat the change as non-trivial" to `conductor.md`. Owner-requested. Reviewer verdict
+  APPROVE, no findings. PR pending (number to add once opened).
 
 ## Open issues / PRs
-- #8 in progress: PR pending (branch `chore/8-token-efficiency`). Decisions in
-  `docs/decisions.md`, 2026-10-27. Next step: commit, push, open the PR with `Closes #8`.
+- Pending PR: `chore/trivial-tie-break` (no issue). Decisions in `docs/decisions.md`, 2026-10-27.
+  Next step: push the branch and open the PR. Never merge; merging is the user's decision.
 - #5 is merged (PR #6). Known nits remain (see `docs/decisions.md`, 2026-10-27): a tiny race with
   a conductor run that already listed `ready` issues; a 404 gives a harmless false-alarm comment.
-- Optional nits from #8 (not applied; see `docs/decisions.md`, 2026-10-27):
-  - "Trivial" has no tie-break ("when in doubt, treat as non-trivial") and does not cover a config
-    change that alters behavior or the shared contract.
+- Skipped by owner (not applied; see `docs/decisions.md`, 2026-10-27):
   - The "Subagent reports" section in `conductor.md` repeats the briefing rule from step 4.
 - Optional follow-ups from PR #4, skipped by the owner (not applied; see `docs/decisions.md`,
   2026-10-27):
@@ -30,15 +29,15 @@
     `git branch -r --list origin/<branch>`) and add `git branch` to the read-only git list.
 
 ## Next
-- [ ] **#8:** commit and push `chore/8-token-efficiency`, then open the PR with `Closes #8`.
-  Never merge; merging is the user's decision.
+- [ ] **Push `chore/trivial-tie-break` and open its PR** (no issue, so no `Closes`). Never merge;
+  merging is the user's decision.
 - [ ] **Test #5 in a real Action run** (untested): a non-owner `ready` is removed with a comment;
   an owner `ready` starts the conductor; a dirty tree in an unattended run comments and stops.
 - [ ] **Test #8 in a real run** (untested): 5-line reports, trivial changes get one review round,
   models apply, and the 80-turn cap is enough for a normal issue.
 - [ ] **Before using the template with an org-owned repo:** replace `github.repository_owner` in
   both `if` expressions of `.github/workflows/ready.yml` with the allowed login.
-- [ ] **Optional:** apply the optional nits and follow-ups above to `conductor.md` (owner approval
+- [ ] **Optional:** apply the remaining optional follow-ups above to `conductor.md` (owner approval
   needed).
 - [ ] **First task once the stack is chosen:** the conductor must fill in
   `.github/workflows/ci.yml` (install, test and lint steps) and the commands in
@@ -51,3 +50,4 @@
   (PR #4, merged).
 - #5 unattended dirty-tree stop and owner-only `ready` guard job (PR #6, merged).
 - Short final summaries (PR #7, merged, no issue).
+- #8 token efficiency (PR #9, merged).

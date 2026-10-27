@@ -4,6 +4,10 @@ Newest first. Format: date, decision, why, alternatives considered.
 
 ## 2026-10-27
 
+- **Trivial-change tie-break in `conductor.md`.** Added "when in doubt, treat the change as
+  non-trivial". Why: avoid under-reviewing a change that only looks small. Skipped nit: the
+  duplicate briefing rule in the "Subagent reports" section, skipped by the owner.
+
 - **Token efficiency: short subagent reports, size-scaled review, explicit models, lower turn cap**
   (issue #8; `.claude/agents/conductor.md` steps 3 and 6-7 and "Subagent reports"; agent model
   lines; `.github/workflows/ready.yml` `--max-turns`).
