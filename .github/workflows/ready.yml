@@ -4,15 +4,51 @@ on:
   issues:
     types: [labeled]
 
-# One run at a time. Each run drains the whole "ready" backlog, so a queued run
-# that GitHub drops (it keeps only the newest pending one) loses nothing.
-concurrency:
-  group: ready-queue
-  cancel-in-progress: false
+# Single allowed-user rule: only the repository owner may add the "ready" label.
+# `env` is not available in job-level `if`, so both jobs compare
+# github.event.sender.login with github.repository_owner directly. That is the
+# owner here and stays correct when the repo is created from the template.
+# For an organisation-owned repo github.repository_owner is the org name, which no
+# sender login equals, so the guard would strip every "ready" label and the
+# conductor would never run; in that case replace github.repository_owner in both
+# `if` expressions with the allowed login (or a vars. entry via a job-level check)
+# before using the template.
 
 jobs:
+  # Removes "ready" when anyone but the owner adds it. Plain shell, no Claude.
+  # Own concurrency group (per issue) so it never waits behind a long conductor run.
+  guard:
+    if: github.event.label.name == 'ready' && github.event.sender.login != github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    concurrency:
+      group: ready-guard-${{ github.event.issue.number }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ISSUE: ${{ github.event.issue.number }}
+      SENDER: ${{ github.event.sender.login }}
+      OWNER: ${{ github.repository_owner }}
+      REPO: ${{ github.repository }}
+    steps:
+      - run: |
+          if gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/ready"; then
+            gh issue comment "$ISSUE" --repo "$REPO" --body "Removed the \`ready\` label: it was added by @$SENDER, but only the repository owner (@$OWNER) may add it. To start the work, the owner adds the \`ready\` label."
+          else
+            gh issue comment "$ISSUE" --repo "$REPO" --body "The \`ready\` label was added by @$SENDER, who is not the repository owner (@$OWNER), but it could not be removed automatically. @$OWNER please check this issue."
+            exit 1
+          fi
+
+  # One conductor at a time. Each run drains the whole "ready" backlog, so a
+  # queued run that GitHub drops (it keeps only the newest pending one) loses
+  # nothing. Job-level so the guard job is never queued behind it.
   conductor:
-    if: github.event.label.name == 'ready'
+    if: github.event.label.name == 'ready' && github.event.sender.login == github.repository_owner
+    concurrency:
+      group: ready-queue
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 120
     permissions:
@@ -42,7 +78,10 @@ jobs:
                run out of turns. One issue at a time, never in parallel.
             This run is unattended: do not wait for answers. If an issue needs the
             owner's input, comment the question, add the needs-decision label, skip
-            that issue and continue with the next. Before stopping, update
+            that issue and continue with the next. Exception: if the working tree
+            is dirty when you start an issue, comment what is dirty on that issue,
+            add the needs-decision label and stop the run (the next issue could
+            not start either). Before stopping, update
             docs/progress.md with where you left off. Never merge, never push to
             main, never add the "ready" label.
           # Best-effort hard block on `gh` command strings, independent of

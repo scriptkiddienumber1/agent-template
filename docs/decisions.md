@@ -4,6 +4,41 @@ Newest first. Format: date, decision, why, alternatives considered.
 
 ## 2026-10-27
 
+- **Unattended dirty tree: comment, add `needs-decision`, stop the run**
+  (`.claude/agents/conductor.md` section 3 step 2; `ready.yml` prompt). Applies to unattended runs
+  only. The conductor does not wait: it comments on the issue what is dirty, adds `needs-decision`
+  and stops the run. Interactive runs are unchanged: they stop and tell the user.
+  Why: nobody can answer in an unattended run, and the next issue could not start on the dirty
+  tree either. Before this, the run halted silently.
+  Alternative: skip that issue and continue. Rejected for the reason above.
+
+- **Owner-only `ready`: `guard` job in `ready.yml`.** A new `guard` job runs when `ready` is added
+  by anyone other than `github.repository_owner`. It removes the label with
+  `gh api -X DELETE repos/$REPO/issues/$ISSUE/labels/ready` and comments why. If the removal fails,
+  it still comments and exits non-zero (red run). The `conductor` job runs only when the sender is
+  the owner, so it never starts before the guard acts. No Claude is involved.
+  Why: the `claude_args` block is best-effort (it matches `gh` command strings), so it cannot
+  enforce owner-only `ready` alone. The guard enforces it in the workflow itself.
+  Concurrency: the `ready-queue` group moved from workflow level to the `conductor` job, so one
+  conductor runs at a time and the rest queue. The guard has its own group per issue
+  (`ready-guard-<n>`), so it never waits behind a long conductor run.
+  Permissions: the REST DELETE needs only `issues: write`, which keeps `GITHUB_TOKEN` at minimum.
+  Allowed user: `github.repository_owner`, not a hardcoded login, so repos created from the
+  template keep working. Caveat: for an organisation-owned repo this is the org name, which no
+  sender matches. The guard would strip every `ready` and the conductor would never run. Before
+  using the template with an org-owned repo, replace `github.repository_owner` in both `if`
+  expressions with the allowed login. `env` is not available in job-level `if`, which is why the
+  context is used directly.
+  Alternatives: (1) rely only on the `claude_args` block (rejected: best-effort). (2) `gh issue edit`
+  instead of REST (rejected for `GITHUB_TOKEN` permission safety). (3) a hardcoded login (rejected:
+  breaks the template).
+  Known nits (accepted):
+  - Tiny race: a conductor run that already listed `ready` issues could pick one up before the
+    guard removes the label.
+  - If the label was already removed by someone else, the DELETE returns 404. The guard then posts
+    a harmless false-alarm comment.
+  - Untested in a real Action run.
+
 - **Start every issue from the latest `origin/main`** (conductor flow, `.claude/agents/conductor.md`
   section 3; issue #3 scope extension).
   Decision: if the issue branch is already checked out, continue on it without switching.
@@ -16,10 +51,10 @@ Newest first. Format: date, decision, why, alternatives considered.
   `git pull --ff-only origin main`. The `.claude/settings.json` allow list gained
   `Bash(git fetch *)` and `Bash(git pull --ff-only *)`.
   Alternatives: not recorded.
-  Known follow-ups (not applied; owner's call):
-  - Unattended runs: "STOP and tell the user" after a dirty tree would halt the whole queue
-    silently. Suggested: when unattended, record it in `docs/progress.md`, comment on the issue
-    and stop that issue.
+  Known follow-ups (owner's call):
+  - Unattended runs: applied in the 2026-10-27 unattended dirty-tree entry above (the original
+    suggestion was to stop only that issue; the run is now stopped, since the next issue could not
+    start either).
   - `git switch -c <branch> origin/main` sets `origin/main` as upstream. Use `--no-track`, or
     push with `git push -u origin <branch>`.
   - The existing-branch check names no command. Suggested: `git branch --list` and

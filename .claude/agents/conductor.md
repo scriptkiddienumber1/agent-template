@@ -33,7 +33,10 @@ If root `CLAUDE.md` still says `Project: TBD`:
    nothing and continue from its last commit. A dirty tree is then normal WIP;
    mention it in the progress note.
 2. Otherwise run `git status --porcelain`. If dirty, STOP and tell the user; do
-   not switch branches. If clean, `git fetch origin`, then:
+   not switch branches. When running unattended (GitHub Action, nobody to
+   answer), do not wait: comment on the issue being started what is dirty, run
+   `gh issue edit <n> --add-label needs-decision`, and stop the run, since the
+   next issue could not start either. If clean, `git fetch origin`, then:
    - if branch `<type>/<issue-number>-<short-slug>` already exists, switch to it
      and continue from its last commit (do not recreate it);
    - if not, `git switch main`, `git pull --ff-only origin main`, then
