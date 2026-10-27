@@ -45,6 +45,9 @@ jobs:
             that issue and continue with the next. Before stopping, update
             docs/progress.md with where you left off. Never merge, never push to
             main, never add the "ready" label.
+          # Hard block, independent of .claude/settings.json: unattended runs must
+          # never be able to add the "ready" label (only the owner does that).
           claude_args: |
             --agent conductor
             --max-turns 200
+            --disallowedTools "Bash(gh issue edit *ready*)" "Bash(gh issue create *ready*)" "Bash(gh api *)"
