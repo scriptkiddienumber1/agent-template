@@ -37,7 +37,8 @@ backlog; you decide what is `ready` and what gets merged.
   120-minute timeout) is hit. Runs queue one at a time; GitHub keeps only the newest
   pending run, which is fine because every run drains the whole backlog. Issues left
   over are picked up by the next run.
-- Unattended runs may add only the `needs-decision` label (`gh issue edit ... --add-label
-  needs-decision`). Any `gh issue edit`/`gh issue create` command mentioning "ready" is
-  denied, so agents can never add `ready`. Other `gh issue edit` forms still need
-  approval (refused when unattended).
+- `needs-decision` (`gh issue edit ... --add-label needs-decision`) is the one label
+  unattended runs may add, with no prompt. Commands mentioning "ready" require approval
+  (ask rule). The owner can approve adding `ready` interactively after saying yes in
+  chat. Unattended runs are refused because nobody can approve, so agents never add
+  `ready` on their own. Other `gh issue edit` forms also need approval.

@@ -55,11 +55,11 @@
       "Bash(gh pr edit *)",
       "Bash(gh label delete *)",
       "Bash(gh repo *)",
-      "Bash(gh api *)"
+      "Bash(gh api *)",
+      "Bash(gh issue edit *ready*)",
+      "Bash(gh issue create *ready*)"
     ],
     "deny": [
-      "Bash(gh issue edit *ready*)",
-      "Bash(gh issue create *ready*)",
       "Bash(git push * main)",
       "Bash(git push * master)",
       "Bash(git push --force *)",
