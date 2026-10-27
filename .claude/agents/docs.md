@@ -15,5 +15,6 @@ From the conductor's summary:
   commands and shared contract when asked. Things only one area needs go in that
   folder's own `CLAUDE.md`.
 
+Report back to the conductor in max 5 lines; details belong in the docs themselves.
 Keep entries short and factual. Do not invent facts; if the summary is missing
 something, say so in your reply.

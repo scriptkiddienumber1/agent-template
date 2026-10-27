@@ -33,7 +33,7 @@ backlog; you decide what is `ready` and what gets merged.
 
 ## Notes
 - Each `ready.yml` run works through *all* open `ready` issues without an open PR,
-  oldest first, one at a time, until none remain or the budget (`--max-turns 200`,
+  oldest first, one at a time, until none remain or the budget (`--max-turns 80`,
   120-minute timeout) is hit. Runs queue one at a time; GitHub keeps only the newest
   pending run, which is fine because every run drains the whole backlog. Issues left
   over are picked up by the next run.
