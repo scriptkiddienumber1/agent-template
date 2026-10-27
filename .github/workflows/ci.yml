@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      # PLACEHOLDER: the conductor fills this in as the first task once the
+      # stack is chosen (see docs/progress.md). Add setup + install steps here.
+      - name: Lint
+        run: echo "TODO: run lint"
+      - name: Test
+        run: echo "TODO: run tests"
