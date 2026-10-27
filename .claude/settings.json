@@ -13,7 +13,7 @@
       "Bash(git checkout -b *)",
       "Bash(git switch *)",
       "Bash(git fetch *)",
-      "Bash(git pull *)",
+      "Bash(git pull --ff-only *)",
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git push *)",
