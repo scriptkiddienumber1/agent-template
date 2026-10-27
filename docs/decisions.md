@@ -4,6 +4,30 @@ Newest first. Format: date, decision, why, alternatives considered.
 
 ## 2026-10-27
 
+- **Token efficiency: short subagent reports, size-scaled review, explicit models, lower turn cap**
+  (issue #8; `.claude/agents/conductor.md` steps 3 and 6-7 and "Subagent reports"; agent model
+  lines; `.github/workflows/ready.yml` `--max-turns`).
+  - Subagents (builder, reviewer, docs) report to the conductor in max 5 lines. Details go in
+    commits and the PR description.
+  - Conductor briefs subagents with the issue number, relevant files and goal only. No conversation
+    history.
+  - Size scaling: trivial changes (config, docs, one-liners) get max 1 review round and run `docs`
+    only if project state or a decision changed. Other changes keep max 2 rounds. Review is never
+    skipped.
+  - Models: builder and reviewer `model: sonnet`, docs `model: haiku`. Conductor model is unset and
+    inherits the session's. Per project, the builder can be raised (e.g. to opus) if sonnet is not
+    good enough for the codebase. Record that choice here.
+  - Unattended `--max-turns` lowered from 200 to 80. This bounds a stuck unattended run.
+  Why: long reports and full cycles on one-liners cost tokens. History-heavy briefs are expensive
+  and not needed. Implementation and review work fits cheaper models.
+  Alternatives: keep the full process always (rejected: cost); keep all agents on the session model
+  (rejected: cost).
+  Status: reviewer APPROVE, no blockers. Untested in a real run.
+  Open nits (optional, not applied):
+  - "Trivial" has no tie-break ("when in doubt, treat as non-trivial"). It also does not cover a
+    config change that alters behavior or the shared contract.
+  - The "Subagent reports" section repeats the briefing rule from step 4.
+
 - **Short final summaries to the owner** (`.claude/agents/conductor.md` step 9; root `CLAUDE.md`
   GitHub workflow). Format: Done (one line), Needs me (one line per item, omitted if none),
   Caveats (one line per real risk or untested assumption, omitted if none), PR link. Details go in
